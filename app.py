@@ -6,14 +6,18 @@ import io
 
 st.set_page_config(page_title="THB to USD Quotation Converter", layout="centered")
 
-st.title("📄 THB ➔ USD 見積書変換ツール")
-st.write("PDFのタイバーツ見積書をアップロードし、為替レートを入力してUSDへ変換します。")
+# タイトル（タイ語＆日本語）
+st.title("📄 ระบบแปลงใบเสนอราคา THB ➔ USD")
+st.subheader("ツール：タイバーツ見積書 USD変換")
 
-# レート入力（初期値は空欄）
-rate_input = st.text_input("為替レート (1 USD = ? THB)", value="")
+st.write("กรุณาอัปโหลดไฟล์ PDF (THB) และระบุอัตราแลกเปลี่ยนเพื่อแปลงเป็น USD")
+st.caption("※タイバーツの見積書PDFをアップロードし、為替レートを入力してください。")
 
-# PDFファイルアップローダー
-uploaded_file = st.file_uploader("変換するPDFファイルを選択またはドラッグ＆ドロップしてください", type=["pdf"])
+# レート入力欄（初期値は空欄）
+rate_input = st.text_input("อัตราแลกเปลี่ยน / 為替レート (1 USD = ? THB)", value="")
+
+# ファイルアップローダー
+uploaded_file = st.file_uploader("เลือกหรือลากไฟล์ PDF มาวางที่นี่ / PDFファイルを選択またはドラッグ＆ドロップ", type=["pdf"])
 
 def process_pdf_bytes(pdf_bytes, rate_text):
     rate = Decimal(rate_text)
@@ -139,26 +143,26 @@ def process_pdf_bytes(pdf_bytes, rate_text):
     doc.close()
     return out_buffer.getvalue()
 
-# 変換実行ボタン
-if st.button("USD変換を実行"):
+# 実行ボタン（タイ語＆日本語）
+if st.button("🚀 เริ่มแปลงเป็น USD / 変換実行"):
     if not rate_input:
-        st.error("為替レートを入力してください。")
+        st.error("กรุณาระบุอัตราแลกเปลี่ยน / 為替レートを入力してください")
     elif not uploaded_file:
-        st.error("PDFファイルをアップロードしてください。")
+        st.error("กรุณาอัปโหลดไฟล์ PDF / PDFファイルをアップロードしてください")
     else:
         try:
             pdf_bytes = uploaded_file.read()
             result_pdf = process_pdf_bytes(pdf_bytes, rate_input)
             
             output_filename = f"USD_{uploaded_file.name}"
-            st.success("変換が完了しました！")
+            st.success("แปลงไฟล์สำเร็จแล้ว! / 変換が完了しました")
             
-            # ダウンロードボタンを表示
+            # ダウンロードボタン
             st.download_button(
-                label="📥 変換後のPDFをダウンロード",
+                label="📥 ดาวน์โหลดไฟล์ PDF (USD) / 変換後のPDFをダウンロード",
                 data=result_pdf,
                 file_name=output_filename,
                 mime="application/pdf"
             )
         except Exception as e:
-            st.error(f"エラーが発生しました: {e}")
+            st.error(f"เกิดข้อผิดพลาด / エラーが発生しました: {e}")
